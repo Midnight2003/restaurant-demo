@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aster & Ember · story loop</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;600;800&display=swap');
+*{box-sizing:border-box}body{margin:0;background:#f1eee7;color:#241d18;font-family:Manrope,sans-serif;scroll-behavior:smooth}a{text-decoration:none;color:inherit}
+
+.top{height:78px;border-bottom:1px solid #cfc8bc;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:sticky;top:0;z-index:1000;background:#f1eee7}.brand{font:32px 'DM Serif Display';letter-spacing:-1px}.nav{display:flex;gap:28px;font-size:13px;text-transform:uppercase;letter-spacing:.12em}.reserve{border-bottom:2px solid #241d18;padding-bottom:5px}
+
+.hero{min-height:78vh;display:grid;grid-template-columns:46% 54%;padding:6vw 5vw 4vw;gap:4vw}.heroText{align-self:center}.kicker{text-transform:uppercase;letter-spacing:.25em;font-size:11px}.hero h1{font:clamp(60px,8vw,126px)/.84 'DM Serif Display';margin:20px 0}.hero p{max-width:450px;font-size:17px}.photo{background-size:cover;background-position:center;min-height:650px;position:relative;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(36,29,24,0.15)}.photo:after{content:"EMBER / 01";position:absolute;bottom:24px;left:24px;color:white;font-size:11px;letter-spacing:.2em}
+
+.menu{padding:90px 5vw}.menuHead{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid #bbb3a8;padding-bottom:24px}.menu h2{font:64px 'DM Serif Display';margin:0}.filters button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;cursor:pointer;transition:.2s;border-radius:4px}.filters button.active{border-color:#241d18;background:#f5efe6}
+
+.dish{display:grid;grid-template-columns:120px 1fr 90px;gap:20px;padding:28px 0;border-bottom:1px solid #d3cdc3;align-items:center;transition:.3s}.dish:hover{background:#faf7f2;margin:0 -20px;padding:28px 20px}.dish img{width:120px;height:120px;object-fit:cover;border-radius:8px}.dish b{font:27px 'DM Serif Display'}.dish .desc{color:#6b635b}.dish .info{grid-column:2}
+
+/* STORY – LARGER FIXED SIZE CONTAINER */
+.story{
+  background:#29231f;
+  color:#f5efe6;
+  padding:100px 12vw;
+  position:relative;
+  min-height:750px;
+  height:750px;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+}
+.story-slide{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8vw;
+  align-items:center;
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0;
+  left:0;
+  padding:100px 12vw;
+  opacity:0;
+  transition:opacity 0.5s ease;
+  pointer-events:none;
+}
+.story-slide.active{
+  opacity:1;
+  pointer-events:auto;
+}
+.story h2{font:64px 'DM Serif Display';margin:0 0 25px 0}
+.story p{color:#cfc4b8;line-height:1.8;margin:18px 0;font-size:20px;font-weight:400}
+.story-image{
+  background:linear-gradient(135deg,#a86d42,#d4a574);
+  height:480px;
+  border-radius:12px;
+  overflow:hidden;
+  background-size:cover;
+  background-position:center;
+  flex-shrink:0;
+}
+.story-content{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  height:100%;
+}
+
+.booking{padding:100px 5vw}.booking h2{font:58px 'DM Serif Display'}.booking form{max-width:720px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.booking input,.booking select{padding:16px;background:#fff;border:1px solid #d3cdc3;border-radius:6px;font-family:Manrope,sans-serif;font-size:15px}.booking button{grid-column:1/-1;padding:17px;background:#241d18;color:white;border:0;border-radius:6px;cursor:pointer;font-weight:600}
+
+footer{padding:35px 5vw;border-top:1px solid #cfc8bc;display:flex;justify-content:space-between;font-size:12px}
+
+.backToTop{position:fixed;bottom:40px;right:40px;width:50px;height:50px;background:#241d18;color:white;border:0;border-radius:50%;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:20px;transition:.3s;box-shadow:0 4px 12px rgba(36,29,24,0.2)}.backToTop.show{display:flex}.backToTop:hover{background:#3d342c;transform:translateY(-3px)}
+
+@media(max-width:700px){
+  .nav{display:none}
+  .hero{grid-template-columns:1fr;padding-top:45px}
+  .photo{min-height:420px}
+  .menuHead{display:block}
+  .menu h2{font-size:48px}
+  .dish{grid-template-columns:100px 1fr auto;gap:12px}
+  .dish img{width:100px;height:100px}
+  .dish .desc{grid-column:2;font-size:14px}
+  .story{min-height:850px;height:850px;padding:60px 5vw}
+  .story-slide{grid-template-columns:1fr;padding:60px 5vw;gap:30px}
+  .story h2{font-size:42px}
+  .story-image{height:300px}
+  .story p{font-size:18px}
+  .booking form{grid-template-columns:1fr}
+  .booking button{grid-column:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="brand">Aster & Ember</div><nav class="nav"><a href="#menu">Menu</a><a href="#story">Story</a><a class="reserve" href="#book">Reserve</a></nav></header>
+<main>
+<section class="hero"><div class="heroText"><div class="kicker">Live fire · Manila</div><h1>Eat close to the flame.</h1><p>A seasonal dining room where Philippine ingredients meet the drama of charcoal, smoke and open fire.</p><a class="reserve" href="#book">Reserve a table →</a></div><div class="photo" style="background-image:url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=650&fit=crop')"></div></section>
+
+<section class="menu" id="menu"><div class="menuHead"><h2>Tonight</h2><div class="filters"><button class="active" onclick="dishFilter('all',this)">All</button><button onclick="dishFilter('sea',this)">Sea</button><button onclick="dishFilter('land',this)">Land</button></div></div>
+<div id="dishes">
+<div class="dish" data-cat="sea"><img src="https://images.unsplash.com/photo-1580959375944-abd7e991f971?w=120&h=120&fit=crop" alt="Charred Prawns"><div class="info"><b>Charred Prawns</b><span class="desc"> Calamansi butter · smoked chili · herbs</span></div><span class="price">₱520</span></div>
+<div class="dish" data-cat="land"><img src="https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=120&h=120&fit=crop" alt="Ember Chicken"><div class="info"><b>Ember Chicken</b><span class="desc"> Annatto glaze · roasted garlic · crisp skin</span></div><span class="price">₱680</span></div>
+<div class="dish" data-cat="sea"><img src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=120&h=120&fit=crop" alt="Coal-Roasted Fish"><div class="info"><b>Coal-Roasted Fish</b><span class="desc"> Green mango relish · seaweed oil</span></div><span class="price">₱760</span></div>
+<div class="dish" data-cat="land"><img src="https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=120&h=120&fit=crop" alt="Short Rib"><div class="info"><b>Short Rib</b><span class="desc"> Tamarind jus · charred onion · rice crisp</span></div><span class="price">₱920</span></div>
+</div></section>
+
+<!-- STORY section: Maximum 20 words per slide (excluding heading) -->
+<section class="story" id="story">
+  <!-- Slide 1 - 20 words -->
+  <div class="story-slide active">
+    <div class="story-content">
+      <h2>A room for long dinners.</h2>
+      <p>Our menu follows the market, not the calendar. Come early, stay late, let the table do the rest. Fire meets skill here.</p>
+    </div>
+    <div class="story-image" style="background-image:url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop')"></div>
+  </div>
+
+  <!-- Slide 2 - 20 words -->
+  <div class="story-slide">
+    <div class="story-content">
+      <h2>Fire, salt, and smoke.</h2>
+      <p>We temper heat with salt and smoke. Each pass over coals transforms texture. Our chefs paint with fire, building depth.</p>
+    </div>
+    <div class="story-image" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop')"></div>
+  </div>
+
+  <!-- Slide 3 - 20 words -->
+  <div class="story-slide">
+    <div class="story-content">
+      <h2>From sea to ember.</h2>
+      <p>Fresh catches meet fire by evening. Smoke carries the ocean into every bite. We source sustainably from local fishermen.</p>
+    </div>
+    <div class="story-image" style="background-image:url('https://images.unsplash.com/photo-1504674900247-5c9d6f2a4b8b?w=600&h=400&fit=crop')"></div>
+  </div>
+
+  <!-- Slide 4 - 20 words -->
+  <div class="story-slide">
+    <div class="story-content">
+      <h2>Nightly rituals.</h2>
+      <p>Lanterns glow, embers flare, service becomes music. We tend fire and guests alike. Each course arrives warm and alive.</p>
+    </div>
+    <div class="story-image" style="background-image:url('https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&h=400&fit=crop')"></div>
+  </div>
+
+  <!-- Slide 5 - 20 words -->
+  <div class="story-slide">
+    <div class="story-content">
+      <h2>The grill's geometry.</h2>
+      <p>Cuts char on edges, hold juice at center. We plate for balance and harmony. Fire, blade, and wood create art.</p>
+    </div>
+    <div class="story-image" style="background-image:url('https://images.unsplash.com/photo-1544025162-d76694265947?w=600&h=400&fit=crop')"></div>
+  </div>
+
+  <!-- Slide 6 - 20 words -->
+  <div class="story-slide">
+    <div class="story-content">
+      <h2>Sweet endings by the flame.</h2>
+      <p>Caramelized fruit, toasted nuts, gentle smoke. The fire closes with sweetness. Leave room for the memory you'll take.</p>
+    </div>
+    <div class="story-image" style="background-image:url('https://images.unsplash.com/photo-1505253758477-3b6d5b5d6f11?w=600&h=400&fit=crop')"></div>
+  </div>
+</section>
+
+<section class="booking" id="book"><div class="kicker">Reservations</div><h2>Save your seat.</h2><form onsubmit="event.preventDefault();alert('Reservation request prepared — no booking was submitted.')"><input required placeholder="Name"><input required type="date"><select required><option value="">Party size</option><option>2</option><option>4</option><option>6</option><option>8</option></select><input required type="time"><button>Prepare reservation</button></form></section>
+</main><footer><span>ASTER & EMBER</span><span>18:00–23:00 · Tue–Sun</span></footer>
+
+<button class="backToTop" id="backToTop">↑</button>
+
+<script>
+function dishFilter(cat,btn){document.querySelectorAll('.filters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.dish').forEach(x=>x.style.display=cat==='all'||x.dataset.cat===cat?'grid':'none')}
+
+document.querySelectorAll('.booking input,.booking select').forEach(el=>el.addEventListener('input',()=>el.style.borderColor=''));
+
+const backToTopBtn = document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 300) {
+    backToTopBtn.classList.add('show');
+  } else {
+    backToTopBtn.classList.remove('show');
+  }
+});
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// STORY SLIDESHOW - Fixed size container with smooth transitions
+(function(){
+  const slides = document.querySelectorAll('#story .story-slide');
+  if (!slides.length) return;
+  
+  let current = 0;
+  const total = slides.length;
+  
+  function showSlide(index) {
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === index);
+    });
+  }
+  
+  showSlide(0);
+  
+  setInterval(() => {
+    current = (current + 1) % total;
+    showSlide(current);
+  }, 10000);
+})();
+
+document.querySelectorAll('a[href="#story"]').forEach(a=>{
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    const wrapper = document.getElementById('story');
+    if(wrapper) wrapper.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
