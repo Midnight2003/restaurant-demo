@@ -223,5 +223,125 @@ document.querySelectorAll('a[href="#story"]').forEach(a=>{
   });
 });
 </script>
+<style>
+  .portfolio-disclaimer {
+    position: fixed;
+    inset: 0;
+    background: rgba(12, 11, 10, 0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 99999;
+  }
+
+  .portfolio-disclaimer__card {
+    width: min(540px, 100%);
+    background: #fffaf3;
+    color: #1e1917;
+    border: 1px solid rgba(61, 39, 24, 0.18);
+    border-radius: 24px;
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.28);
+    padding: 28px 28px 22px;
+    text-align: left;
+  }
+
+  .portfolio-disclaimer__tag {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8a5b3c;
+    font-weight: 700;
+  }
+
+  .portfolio-disclaimer__card h2 {
+    margin: 0 0 14px;
+    font-size: clamp(28px, 5vw, 38px);
+    line-height: 1.04;
+    letter-spacing: -0.06em;
+    font-weight: 700;
+  }
+
+  .portfolio-disclaimer__card p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #433731;
+  }
+
+  .portfolio-disclaimer__check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+    font-size: 14px;
+    color: #413a35;
+  }
+
+  .portfolio-disclaimer__check input {
+    width: 16px;
+    height: 16px;
+    accent-color: #1d1a17;
+    cursor: pointer;
+  }
+
+  .portfolio-disclaimer__card button {
+    margin-top: 22px;
+    border: 0;
+    background: #1d1a17;
+    color: #fff;
+    border-radius: 999px;
+    padding: 13px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .portfolio-disclaimer__card button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .portfolio-disclaimer__card button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    opacity: 0.96;
+  }
+</style>
+<div id="fictionalDisclaimer" class="portfolio-disclaimer" aria-live="polite" aria-modal="true" role="dialog">
+  <div class="portfolio-disclaimer__card">
+    <span class="portfolio-disclaimer__tag">Portfolio concept notice</span>
+    <h2>Disclaimer</h2>
+    <p>This is a fictional concept project for portfolio demonstration purposes only. Not affiliated with any real entity.</p>
+    <label class="portfolio-disclaimer__check">
+      <input id="disclaimerCheck" type="checkbox">
+      <span>I acknowledge this notice</span>
+    </label>
+    <button id="acknowledgeDisclaimer" type="button" disabled>I acknowledge</button>
+  </div>
+</div>
+<script>
+(() => {
+  const modal = document.getElementById('fictionalDisclaimer');
+  const checkbox = document.getElementById('disclaimerCheck');
+  const button = document.getElementById('acknowledgeDisclaimer');
+
+  if (!modal || !checkbox || !button) return;
+
+  modal.style.display = 'flex';
+
+  checkbox.addEventListener('change', () => {
+    button.disabled = !checkbox.checked;
+  });
+
+  button.addEventListener('click', () => {
+    if (!checkbox.checked) return;
+    modal.remove();
+  });
+})();
+</script>
 </body>
 </html>
