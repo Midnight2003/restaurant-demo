@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Aster & Ember · story loop</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f3d2a0'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23b35439'/%3E%3Cpath d='M29 19v17M23 23c0-7 9-8 9 0v4c0 7-9 7-9 0v-4Zm14 13h-2a5 5 0 0 0-5 5v2h12v-2a5 5 0 0 0-5-5Z' fill='%23fff7ef'/%3E%3C/svg%3E">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;600;800&display=swap');
 *{box-sizing:border-box}body{margin:0;background:#f1eee7;color:#241d18;font-family:Manrope,sans-serif;scroll-behavior:smooth}a{text-decoration:none;color:inherit}
@@ -161,7 +162,7 @@ footer{padding:35px 5vw;border-top:1px solid #cfc8bc;display:flex;justify-conten
   </div>
 </section>
 
-<section class="booking" id="book"><div class="kicker">Reservations</div><h2>Save your seat.</h2><form onsubmit="event.preventDefault();alert('Reservation request prepared — no booking was submitted.')"><input required placeholder="Name"><input required type="date"><select required><option value="">Party size</option><option>2</option><option>4</option><option>6</option><option>8</option></select><input required type="time"><button>Prepare reservation</button></form></section>
+<section class="booking" id="book"><div class="kicker">Reservations</div><h2>Save your seat.</h2><form id="reserveForm"><input required placeholder="Name" aria-label="Name"><input required type="date" aria-label="Date"><select required aria-label="Party size"><option value="">Party size</option><option>2</option><option>4</option><option>6</option><option>8</option></select><input required type="time" aria-label="Time"><button type="submit">Prepare reservation</button></form></section>
 </main><footer><span>ASTER & EMBER</span><span>18:00–23:00 · Tue–Sun</span></footer>
 
 <button class="backToTop" id="backToTop">↑</button>
@@ -170,6 +171,15 @@ footer{padding:35px 5vw;border-top:1px solid #cfc8bc;display:flex;justify-conten
 function dishFilter(cat,btn){document.querySelectorAll('.filters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.dish').forEach(x=>x.style.display=cat==='all'||x.dataset.cat===cat?'grid':'none')}
 
 document.querySelectorAll('.booking input,.booking select').forEach(el=>el.addEventListener('input',()=>el.style.borderColor=''));
+
+const reserveForm = document.getElementById('reserveForm');
+reserveForm.addEventListener('submit', function(event){
+  event.preventDefault();
+  const name = reserveForm.querySelector('input[placeholder="Name"]').value.trim() || 'Guest';
+  const date = reserveForm.querySelector('input[type="date"]').value || 'your preferred date';
+  toast(`Reservation prepared for ${name}. We’ll hold a table for ${date}.`);
+  reserveForm.reset();
+});
 
 const backToTopBtn = document.getElementById('backToTop');
 window.addEventListener('scroll', () => {
