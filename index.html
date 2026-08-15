@@ -3,13 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aster & Ember · story loop</title>
+<meta name="description" content="Aster & Ember - Premium charcoal grilled cuisine featuring Philippine ingredients and open-fire cooking in Manila.">
+<meta name="keywords" content="fine dining, restaurant, charcoal grill, manila, philippine cuisine">
+<meta property="og:title" content="Aster & Ember · Premium Fire-Grilled Dining">
+<meta property="og:description" content="A seasonal dining room where Philippine ingredients meet charcoal, smoke and open fire.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200&h=630&fit=crop">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="author" content="Aster & Ember">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://aster-ember.com">
+<title>Aster & Ember · Story Loop - Premium Charcoal Grill Restaurant</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f3d2a0'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23b35439'/%3E%3Cpath d='M29 19v17M23 23c0-7 9-8 9 0v4c0 7-9 7-9 0v-4Zm14 13h-2a5 5 0 0 0-5 5v2h12v-2a5 5 0 0 0-5-5Z' fill='%23fff7ef'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="shared.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;600;800&display=swap');
 *{box-sizing:border-box}body{margin:0;background:#f1eee7;color:#241d18;font-family:Manrope,sans-serif;scroll-behavior:smooth}a{text-decoration:none;color:inherit}
 
 .top{height:78px;border-bottom:1px solid #cfc8bc;display:flex;align-items:center;justify-content:space-between;padding:0 5vw;position:sticky;top:0;z-index:1000;background:#f1eee7}.brand{font:32px 'DM Serif Display';letter-spacing:-1px}.nav{display:flex;gap:28px;font-size:13px;text-transform:uppercase;letter-spacing:.12em}.reserve{border-bottom:2px solid #241d18;padding-bottom:5px}
+.hamburger{display:none;flex-direction:column;gap:6px;background:none;border:none;cursor:pointer;padding:0;z-index:1001}
+.hamburger span{width:24px;height:2px;background:#241d18;transition:.3s}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translate(8px,8px)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-nav{display:none;position:fixed;top:78px;left:0;right:0;background:#f1eee7;flex-direction:column;gap:0;padding:20px 0;z-index:999;border-bottom:1px solid #cfc8bc}
+.mobile-nav.active{display:flex}
+.mobile-nav a{padding:16px 5vw;font-size:14px;text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid #cfc8bc;transition:.2s}
+.mobile-nav a:hover{background:#faf7f2}
 
 .hero{min-height:78vh;display:grid;grid-template-columns:46% 54%;padding:6vw 5vw 4vw;gap:4vw}.heroText{align-self:center}.kicker{text-transform:uppercase;letter-spacing:.25em;font-size:11px}.hero h1{font:clamp(60px,8vw,126px)/.84 'DM Serif Display';margin:20px 0}.hero p{max-width:450px;font-size:17px}.photo{background-size:cover;background-position:center;min-height:650px;position:relative;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(36,29,24,0.15)}.photo:after{content:"EMBER / 01";position:absolute;bottom:24px;left:24px;color:white;font-size:11px;letter-spacing:.2em}
 
@@ -66,13 +86,14 @@
   height:100%;
 }
 
-.booking{padding:100px 5vw}.booking h2{font:58px 'DM Serif Display'}.booking form{max-width:720px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.booking input,.booking select{padding:16px;background:#fff;border:1px solid #d3cdc3;border-radius:6px;font-family:Manrope,sans-serif;font-size:15px}.booking button{grid-column:1/-1;padding:17px;background:#241d18;color:white;border:0;border-radius:6px;cursor:pointer;font-weight:600}
+
 
 footer{padding:35px 5vw;border-top:1px solid #cfc8bc;display:flex;justify-content:space-between;font-size:12px}
 
 .backToTop{position:fixed;bottom:40px;right:40px;width:50px;height:50px;background:#241d18;color:white;border:0;border-radius:50%;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:20px;transition:.3s;box-shadow:0 4px 12px rgba(36,29,24,0.2)}.backToTop.show{display:flex}.backToTop:hover{background:#3d342c;transform:translateY(-3px)}
 
 @media(max-width:700px){
+  .hamburger{display:flex}
   .nav{display:none}
   .hero{grid-template-columns:1fr;padding-top:45px}
   .photo{min-height:420px}
@@ -90,11 +111,411 @@ footer{padding:35px 5vw;border-top:1px solid #cfc8bc;display:flex;justify-conten
   .booking button{grid-column:auto}
 }
 </style>
+<style id="professional-booking-styles">
+/* =========================
+   RESERVATIONS — REFINED
+   ========================= */
+.booking {
+  padding: 110px 5vw 120px;
+  background: #f1eee7;
+}
+
+.booking-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(280px, .8fr) minmax(420px, 1.2fr);
+  gap: clamp(60px, 9vw, 130px);
+  align-items: center;
+}
+
+.booking-intro {
+  max-width: 430px;
+}
+
+.booking .kicker {
+  margin-bottom: 16px;
+}
+
+.booking h2 {
+  margin: 0 0 22px;
+  font: clamp(48px, 5.5vw, 72px)/.95 'DM Serif Display';
+  letter-spacing: -.025em;
+}
+
+.booking-copy {
+  margin: 0;
+  max-width: 390px;
+  color: #6b635b;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.booking-meta {
+  display: flex;
+  gap: 28px;
+  margin-top: 34px;
+  padding-top: 22px;
+  border-top: 1px solid #d3cdc3;
+}
+
+.booking-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.booking-meta strong {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+.booking-meta span {
+  color: #6b635b;
+  font-size: 13px;
+}
+
+.booking-card {
+  padding: clamp(28px, 4vw, 46px);
+  background: #faf7f2;
+  border: 1px solid #d3cdc3;
+  border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(36,29,24,.07);
+}
+
+.booking-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  padding-bottom: 22px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid #d3cdc3;
+}
+
+.booking-card-head h3 {
+  margin: 0;
+  font: 30px/1.1 'DM Serif Display';
+}
+
+.booking-card-head span {
+  color: #7a7168;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  white-space: nowrap;
+}
+
+.booking form {
+  max-width: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.booking-field {
+  position: relative;
+}
+
+.booking-field.full {
+  grid-column: 1 / -1;
+}
+
+.booking-field label {
+  display: block;
+  margin: 0 0 8px;
+  color: #514841;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.booking input,
+.booking select {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 15px;
+  background: #fff;
+  color: #241d18;
+  border: 1px solid #cbc4ba;
+  border-radius: 7px;
+  font-family: Manrope, sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.booking input::placeholder {
+  color: #9b9289;
+}
+
+.booking input:hover,
+.booking select:hover {
+  border-color: #a99f94;
+}
+
+.booking input:focus,
+.booking select:focus {
+  border-color: #b35439;
+  box-shadow: 0 0 0 3px rgba(179,84,57,.1);
+  background: #fffdfa;
+}
+
+.booking select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.booking button {
+  grid-column: 1 / -1;
+  min-height: 54px;
+  margin-top: 4px;
+  padding: 15px 20px;
+  background: #241d18;
+  color: #fff;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: Manrope, sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.booking button:hover {
+  background: #3d342c;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(36,29,24,.14);
+}
+
+.booking button:active {
+  transform: translateY(0);
+}
+
+.booking button:focus-visible {
+  outline: 3px solid #b35439;
+  outline-offset: 3px;
+}
+
+.booking .form-success {
+  grid-column: 1 / -1;
+  display: none;
+  padding: 13px 15px;
+  background: #eee9df;
+  border: 1px solid #d3cdc3;
+  border-radius: 7px;
+  color: #514841;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.booking .form-error {
+  margin-top: 5px;
+  color: #a33e2c;
+  font-size: 11px;
+}
+
+@media (max-width: 900px) {
+  .booking-inner {
+    grid-template-columns: 1fr;
+    gap: 55px;
+  }
+
+  .booking-intro {
+    max-width: 600px;
+  }
+
+  .booking-copy {
+    max-width: 560px;
+  }
+}
+
+@media (max-width: 600px) {
+  .booking {
+    padding: 75px 5vw 85px;
+  }
+
+  .booking-inner {
+    gap: 40px;
+  }
+
+  .booking h2 {
+    font-size: 48px;
+  }
+
+  .booking-meta {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .booking-card {
+    padding: 25px 20px;
+    border-radius: 11px;
+  }
+
+  .booking-card-head {
+    display: block;
+  }
+
+  .booking-card-head h3 {
+    margin-bottom: 8px;
+  }
+
+  .booking form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .booking-field.full {
+    grid-column: auto;
+  }
+
+  .booking button {
+    grid-column: auto;
+  }
+}
+</style>
+
+
+<style>
+  .dish[hidden]{display:none}
+  :where(a,button,input,select):focus-visible{
+    outline:3px solid rgba(179,84,57,.55);
+    outline-offset:3px;
+  }
+  .reserve{cursor:pointer}
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr 1fr}
+    .story{padding-left:7vw;padding-right:7vw}
+    .story-slide{padding-left:7vw;padding-right:7vw;gap:5vw}
+  }
+  @media(max-width:700px){
+    .top{padding:0 5vw}
+    .brand{font-size:27px}
+    .hero{grid-template-columns:1fr;gap:28px}
+    .hero h1{font-size:clamp(54px,16vw,82px)}
+    .photo{min-height:420px}
+    .dish{grid-template-columns:84px 1fr auto;align-items:start}
+    .dish img{width:84px;height:84px}
+    .dish b{font-size:22px;display:block;margin-bottom:5px}
+    .dish .desc{display:block;line-height:1.5}
+    .story{min-height:780px;height:780px;padding:0 5vw}
+    .story-slide{
+      grid-template-columns:1fr;
+      grid-template-rows:auto auto;
+      align-content:center;
+      gap:26px;
+      padding:55px 5vw;
+    }
+    .story-image{height:270px;order:2}
+    .story-content{height:auto}
+    .story p{font-size:16px;line-height:1.65}
+    .footer-grid{grid-template-columns:1fr}
+  }
+</style>
+
+<style id="disclaimer-popup-styles">
+  .portfolio-disclaimer {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(12, 11, 10, 0.74);
+    z-index: 2147483647;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .portfolio-disclaimer[hidden] {
+    display: none !important;
+  }
+
+  .portfolio-disclaimer__card {
+    width: min(540px, 100%);
+    padding: 30px;
+    background: #fffaf3;
+    color: #1e1917;
+    border: 1px solid rgba(61, 39, 24, .16);
+    border-radius: 20px;
+    box-shadow: 0 28px 90px rgba(0, 0, 0, .32);
+  }
+
+  .portfolio-disclaimer__tag {
+    display: block;
+    margin-bottom: 10px;
+    color: #8a5b3c;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+  }
+
+  .portfolio-disclaimer__card h2 {
+    margin: 0 0 14px;
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 5vw, 42px);
+    line-height: 1;
+  }
+
+  .portfolio-disclaimer__card p {
+    margin: 0;
+    color: #433731;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .portfolio-disclaimer__card button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    margin-top: 24px;
+    padding: 12px 22px;
+    border: 0;
+    border-radius: 999px;
+    background: #1d1a17;
+    color: #fff;
+    font: 700 14px Manrope, sans-serif;
+    cursor: pointer;
+    pointer-events: auto;
+    touch-action: manipulation;
+  }
+
+  .portfolio-disclaimer__card button:hover {
+    background: #b35439;
+  }
+
+  .portfolio-disclaimer__card button:focus-visible {
+    outline: 3px solid #b35439;
+    outline-offset: 3px;
+  }
+
+  body.disclaimer-open {
+    overflow: hidden;
+  }
+</style>
+
 </head>
 <body>
-
-<header class="top"><div class="brand">Aster & Ember</div><nav class="nav"><a href="#menu">Menu</a><a href="#story">Story</a><a class="reserve" href="#book">Reserve</a></nav></header>
-<main>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<div class="cookie-banner" id="cookieBanner">
+  <span>We use cookies to enhance your experience. By continuing, you accept our <a href="privacy.html" target="_blank">privacy policy</a>.</span>
+  <div style="display: flex; gap: 10px;">
+    <button class="reject">Reject</button>
+    <button class="accept">Accept</button>
+  </div>
+</div>
+<header class="top" role="banner"><div class="brand">Aster & Ember</div><nav class="nav" aria-label="Main navigation"><a href="#menu">Menu</a><a href="#story">Story</a><a class="reserve" href="#book">Reserve</a></nav><button class="hamburger" id="hamburger" aria-label="Toggle mobile menu" aria-expanded="false"><span></span><span></span><span></span></button></header>
+<nav class="mobile-nav" id="mobile-nav"><a href="#menu">Menu</a><a href="#story">Story</a><a href="#book">Reserve</a></nav>
+<main id="main-content">
 <section class="hero"><div class="heroText"><div class="kicker">Live fire · Manila</div><h1>Eat close to the flame.</h1><p>A seasonal dining room where Philippine ingredients meet the drama of charcoal, smoke and open fire.</p><a class="reserve" href="#book">Reserve a table →</a></div><div class="photo" style="background-image:url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=650&fit=crop')"></div></section>
 
 <section class="menu" id="menu"><div class="menuHead"><h2>Tonight</h2><div class="filters"><button class="active" onclick="dishFilter('all',this)">All</button><button onclick="dishFilter('sea',this)">Sea</button><button onclick="dishFilter('land',this)">Land</button></div></div>
@@ -162,186 +583,809 @@ footer{padding:35px 5vw;border-top:1px solid #cfc8bc;display:flex;justify-conten
   </div>
 </section>
 
-<section class="booking" id="book"><div class="kicker">Reservations</div><h2>Save your seat.</h2><form id="reserveForm"><input required placeholder="Name" aria-label="Name"><input required type="date" aria-label="Date"><select required aria-label="Party size"><option value="">Party size</option><option>2</option><option>4</option><option>6</option><option>8</option></select><input required type="time" aria-label="Time"><button type="submit">Prepare reservation</button></form></section>
-</main><footer><span>ASTER & EMBER</span><span>18:00–23:00 · Tue–Sun</span></footer>
+<section class="booking" id="book">
+  <div class="booking-inner">
+
+    <div class="booking-intro">
+      <div class="kicker">Reservations</div>
+      <h2>Save your seat.</h2>
+      <p class="booking-copy">
+        Join us for an evening of live fire, seasonal Philippine ingredients,
+        and slow dinners made to linger over.
+      </p>
+
+      <div class="booking-meta">
+        <div>
+          <strong>Hours</strong>
+          <span>Tue–Sun · 5–11pm</span>
+        </div>
+        <div>
+          <strong>Location</strong>
+          <span>Manila</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="booking-card">
+      <div class="booking-card-head">
+        <h3>Reserve a table</h3>
+        <span>Guest details</span>
+      </div>
+
+      <form id="reserveForm">
+        <div class="form-success" role="status" aria-live="polite"></div>
+
+        <div class="booking-field">
+          <label for="reservationName">Name</label>
+          <input
+            id="reservationName"
+            required
+            placeholder="Your full name"
+            name="name"
+            aria-label="Full name"
+            minlength="2"
+            autocomplete="name">
+          <div class="form-error"></div>
+        </div>
+
+        <div class="booking-field">
+          <label for="reservationGuests">Party size</label>
+          <select
+            id="reservationGuests"
+            required
+            name="party_size"
+            aria-label="Party size">
+            <option value="">Select guests</option>
+            <option value="2">2 guests</option>
+            <option value="4">4 guests</option>
+            <option value="6">6 guests</option>
+            <option value="8">8 guests</option>
+          </select>
+          <div class="form-error"></div>
+        </div>
+
+        <div class="booking-field">
+          <label for="reservationDate">Date</label>
+          <input
+            id="reservationDate"
+            required
+            type="date"
+            name="date"
+            aria-label="Reservation date">
+          <div class="form-error"></div>
+        </div>
+
+        <div class="booking-field">
+          <label for="reservationTime">Time</label>
+          <input
+            id="reservationTime"
+            required
+            type="time"
+            name="time"
+            aria-label="Reservation time">
+          <div class="form-error"></div>
+        </div>
+
+        <button type="submit" aria-label="Submit reservation">
+          Prepare reservation
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>
+</main>
 
 <button class="backToTop" id="backToTop">↑</button>
 
 <script>
-function dishFilter(cat,btn){document.querySelectorAll('.filters button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.dish').forEach(x=>x.style.display=cat==='all'||x.dataset.cat===cat?'grid':'none')}
+(() => {
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
-document.querySelectorAll('.booking input,.booking select').forEach(el=>el.addEventListener('input',()=>el.style.borderColor=''));
+  // Menu filtering
+  window.dishFilter = (category, button) => {
+    $$('.filters button').forEach(item => item.classList.toggle('active', item === button));
+    $$('.dish').forEach(dish => {
+      const visible = category === 'all' || dish.dataset.cat === category;
+      dish.hidden = !visible;
+    });
+  };
 
-const reserveForm = document.getElementById('reserveForm');
-reserveForm.addEventListener('submit', function(event){
-  event.preventDefault();
-  const name = reserveForm.querySelector('input[placeholder="Name"]').value.trim() || 'Guest';
-  const date = reserveForm.querySelector('input[type="date"]').value || 'your preferred date';
-  toast(`Reservation prepared for ${name}. We’ll hold a table for ${date}.`);
-  reserveForm.reset();
-});
-
-const backToTopBtn = document.getElementById('backToTop');
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 300) {
-    backToTopBtn.classList.add('show');
-  } else {
-    backToTopBtn.classList.remove('show');
+  // Back to top
+  const backToTop = $('#backToTop');
+  if (backToTop) {
+    const updateBackToTop = () => backToTop.classList.toggle('show', window.scrollY > 300);
+    window.addEventListener('scroll', updateBackToTop, { passive: true });
+    updateBackToTop();
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
-});
-backToTopBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
 
-// STORY SLIDESHOW - Fixed size container with smooth transitions
-(function(){
-  const slides = document.querySelectorAll('#story .story-slide');
-  if (!slides.length) return;
-  
-  let current = 0;
-  const total = slides.length;
-  
-  function showSlide(index) {
-    slides.forEach((s, i) => {
-      s.classList.toggle('active', i === index);
+  // Story slideshow
+  const slides = $$('#story .story-slide');
+  let currentSlide = 0;
+  let slideshowTimer;
+
+  const showSlide = index => {
+    if (!slides.length) return;
+    currentSlide = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = i === currentSlide;
+      slide.classList.toggle('active', active);
+      slide.setAttribute('aria-hidden', String(!active));
+    });
+  };
+
+  const startSlideshow = () => {
+    if (slides.length < 2) return;
+    clearInterval(slideshowTimer);
+    slideshowTimer = setInterval(() => showSlide(currentSlide + 1), 10000);
+  };
+
+  if (slides.length) {
+    slides.forEach((slide, i) => {
+      slide.setAttribute('aria-hidden', String(i !== 0));
+    });
+    showSlide(0);
+    startSlideshow();
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) clearInterval(slideshowTimer);
+      else startSlideshow();
     });
   }
-  
-  showSlide(0);
-  
-  setInterval(() => {
-    current = (current + 1) % total;
-    showSlide(current);
-  }, 10000);
-})();
 
-document.querySelectorAll('a[href="#story"]').forEach(a=>{
-  a.addEventListener('click', function(e){
-    e.preventDefault();
-    const wrapper = document.getElementById('story');
-    if(wrapper) wrapper.scrollIntoView({behavior:'smooth'});
+  // Mobile navigation
+  const hamburger = $('#hamburger');
+  const mobileNav = $('#mobile-nav');
+
+  const closeMobileNav = () => {
+    if (!hamburger || !mobileNav) return;
+    hamburger.classList.remove('active');
+    mobileNav.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+  };
+
+  if (hamburger && mobileNav) {
+    hamburger.addEventListener('click', () => {
+      const isOpen = !mobileNav.classList.contains('active');
+      hamburger.classList.toggle('active', isOpen);
+      mobileNav.classList.toggle('active', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+    });
+    $$('.mobile-nav a').forEach(link => link.addEventListener('click', closeMobileNav));
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeMobileNav();
+    });
+  }
+
+  // Close the mobile menu when resizing back to desktop.
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 700) closeMobileNav();
   });
-});
+
+  // Set today's date as the earliest reservation date.
+  const reservationDate = $('input[name="date"]');
+  if (reservationDate) {
+    const today = new Date();
+    const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+      .toISOString().split('T')[0];
+    reservationDate.min = localDate;
+  }
+
+  // Newsletter
+  const newsletter = $('.footer-newsletter');
+  if (newsletter) {
+    const email = $('input[type="email"]', newsletter);
+    const button = $('button', newsletter);
+    newsletter.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!email?.checkValidity()) {
+        email?.reportValidity();
+        return;
+      }
+      button.textContent = 'Subscribed ✓';
+      button.disabled = true;
+      email.disabled = true;
+    });
+  }
+
+  // Disclaimer
+  const modal = $('#fictionalDisclaimer');
+  const acknowledge = $('#acknowledgeDisclaimer');
+  if (modal && acknowledge) {
+    document.body.classList.add('modal-open');
+    acknowledge.focus();
+    acknowledge.addEventListener('click', () => {
+      modal.remove();
+      document.body.classList.remove('modal-open');
+    });
+  }
+})();
 </script>
 <style>
-  .portfolio-disclaimer {
-    position: fixed;
-    inset: 0;
-    background: rgba(12, 11, 10, 0.72);
+  /* FOOTER */
+  .site-footer {
+    background: #241d18;
+    color: #f5efe6;
+    padding: 70px 5vw 30px;
+    margin-top: 100px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.2fr;
+    gap: 40px;
+    max-width: 1400px;
+    margin: auto 0 40px;
+  }
+  .footer-col h4 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    margin: 0 0 16px;
+  }
+  .footer-col p { margin: 0; font-size: 14px; line-height: 1.6; color: #cfc4b8; }
+  .footer-col a { display: block; margin: 10px 0; font-size: 14px; color: #e0d5c8; transition: .2s; }
+  .footer-col a:hover { color: #fff; }
+  .footer-newsletter { margin: 20px 0; }
+  .footer-newsletter input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .footer-newsletter button {
+    width: 100%;
+    padding: 11px 14px;
+    background: #b35439;
+    color: white;
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .social-links { display: flex; gap: 12px; margin-top: 16px; }
+  .social-links a {
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px;
-    z-index: 99999;
-  }
-
-  .portfolio-disclaimer__card {
-    width: min(540px, 100%);
-    background: #fffaf3;
-    color: #1e1917;
-    border: 1px solid rgba(61, 39, 24, 0.18);
-    border-radius: 24px;
-    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.28);
-    padding: 28px 28px 22px;
-    text-align: left;
-  }
-
-  .portfolio-disclaimer__tag {
-    display: inline-block;
-    margin-bottom: 10px;
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #8a5b3c;
-    font-weight: 700;
-  }
-
-  .portfolio-disclaimer__card h2 {
-    margin: 0 0 14px;
-    font-size: clamp(28px, 5vw, 38px);
-    line-height: 1.04;
-    letter-spacing: -0.06em;
-    font-weight: 700;
-  }
-
-  .portfolio-disclaimer__card p {
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    font-size: 14px;
+    transition: .2s;
+    color: #e0d5c8;
     margin: 0;
-    font-size: 16px;
-    line-height: 1.7;
-    color: #433731;
   }
-
-  .portfolio-disclaimer__check {
+  .social-links a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .footer-bottom {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    margin-top: 22px;
-    font-size: 14px;
-    color: #413a35;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px;
+    color: #9d9591;
   }
-
-  .portfolio-disclaimer__check input {
-    width: 16px;
-    height: 16px;
-    accent-color: #1d1a17;
-    cursor: pointer;
-  }
-
-  .portfolio-disclaimer__card button {
-    margin-top: 22px;
-    border: 0;
-    background: #1d1a17;
-    color: #fff;
-    border-radius: 999px;
-    padding: 13px 20px;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-  }
-
-  .portfolio-disclaimer__card button:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-
-  .portfolio-disclaimer__card button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    opacity: 0.96;
+  .footer-links a { margin: 0 16px 0 0; color: #9d9591; }
+  .footer-links a:hover { color: #cfc4b8; }
+  @media(max-width:900px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
   }
 </style>
-<div id="fictionalDisclaimer" class="portfolio-disclaimer" aria-live="polite" aria-modal="true" role="dialog">
+
+<!-- Portfolio disclaimer popup -->
+<div id="fictionalDisclaimer"
+     class="portfolio-disclaimer"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="disclaimerTitle">
   <div class="portfolio-disclaimer__card">
     <span class="portfolio-disclaimer__tag">Portfolio concept notice</span>
-    <h2>Disclaimer</h2>
+    <h2 id="disclaimerTitle">Disclaimer</h2>
     <p>This is a fictional concept project for portfolio demonstration purposes only. Not affiliated with any real entity.</p>
-    <label class="portfolio-disclaimer__check">
-      <input id="disclaimerCheck" type="checkbox">
-      <span>I acknowledge this notice</span>
-    </label>
-    <button id="acknowledgeDisclaimer" type="button" disabled>I acknowledge</button>
+    <button id="acknowledgeDisclaimer" type="button">I acknowledge</button>
   </div>
 </div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+
+      <div class="footer-col">
+        <h4>Aster & Ember</h4>
+        <p>A seasonal dining room where Philippine ingredients meet the drama of charcoal, smoke and open fire.</p>
+
+        <div class="social-links" aria-label="Social links">
+          <a href="#" title="Instagram" aria-label="Instagram">📷</a>
+          <a href="#" title="Facebook" aria-label="Facebook">👍</a>
+          <a href="#" title="Email" aria-label="Email">✉️</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="#menu">Menu</a>
+        <a href="#story">Our Story</a>
+        <a href="#book">Reservations</a>
+        <a href="#book">Private Events</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Hours</h4>
+        <div class="hours-list">
+          <div>Tue–Thu: 5–11pm</div>
+          <div>Fri–Sat: 5pm–12am</div>
+          <div>Sun: 5–10pm</div>
+          <div>Mon: Closed</div>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Subscribe</h4>
+        <p>Get updates on seasonal menus and special events.</p>
+
+        <div class="footer-newsletter">
+          <input type="email" placeholder="Your email" aria-label="Email address">
+          <button type="button">Subscribe</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div>&copy; 2024 Aster & Ember. All rights reserved.</div>
+
+      <div class="footer-links">
+        <a href="privacy.html" rel="noopener">Privacy</a>
+        <a href="terms.html" rel="noopener">Terms</a>
+        <a href="#book">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+/* =========================
+   REFINED FOOTER
+   ========================= */
+.site-footer {
+  background: #241d18;
+  color: #f5efe6;
+  padding: 88px 5vw 28px;
+  margin-top: 100px;
+  border-radius: 0;
+}
+
+.site-footer .footer-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.site-footer .footer-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.55fr) minmax(150px, .8fr) minmax(180px, .9fr) minmax(260px, 1.2fr);
+  gap: clamp(55px, 7vw, 120px);
+  align-items: start;
+  margin: 0 auto 70px;
+}
+
+.site-footer .footer-col {
+  min-width: 0;
+}
+
+.site-footer .footer-col:first-child {
+  max-width: 430px;
+}
+
+.site-footer .footer-col h4 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  line-height: 1.15;
+  margin: 0 0 22px;
+  color: #f5efe6;
+}
+
+.site-footer .footer-col:first-child h4 {
+  font-size: 30px;
+  margin-bottom: 24px;
+}
+
+.site-footer .footer-col p {
+  margin: 0;
+  max-width: 380px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #cfc4b8;
+}
+
+.site-footer .footer-col a {
+  display: block;
+  width: fit-content;
+  margin: 0 0 15px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #e0d5c8;
+  transition: color .2s ease, transform .2s ease;
+}
+
+.site-footer .footer-col a:hover {
+  color: #fff;
+  transform: translateX(3px);
+}
+
+.site-footer .social-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.site-footer .social-links a {
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50%;
+  font-size: 15px;
+  color: #e0d5c8;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.site-footer .social-links a:hover {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.4);
+  transform: translateY(-2px);
+}
+
+.site-footer .hours-list {
+  display: grid;
+  gap: 13px;
+}
+
+.site-footer .hours-list div {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #cfc4b8;
+}
+
+.site-footer .footer-newsletter {
+  margin: 0;
+  margin-top: 24px;
+}
+
+.site-footer .footer-newsletter input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 15px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(255,255,255,.04);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 10px;
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.site-footer .footer-newsletter input::placeholder {
+  color: #8f8780;
+}
+
+.site-footer .footer-newsletter input:focus {
+  border-color: #b35439;
+  background: rgba(255,255,255,.07);
+}
+
+.site-footer .footer-newsletter button {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 15px;
+  background: #b35439;
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.site-footer .footer-newsletter button:hover {
+  background: #c36043;
+  transform: translateY(-1px);
+}
+
+.site-footer .footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(255,255,255,.12);
+  font-size: 12px;
+  line-height: 1.5;
+  color: #9d9591;
+}
+
+.site-footer .footer-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.site-footer .footer-links a {
+  margin: 0;
+  color: #9d9591;
+}
+
+.site-footer .footer-links a:hover {
+  color: #f5efe6;
+}
+
+@media (max-width: 1050px) {
+  .site-footer .footer-grid {
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 55px 45px;
+  }
+
+  .site-footer .footer-col:last-child {
+    grid-column: 1 / -1;
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 700px) {
+  .site-footer {
+    padding: 65px 5vw 25px;
+    margin-top: 70px;
+  }
+
+  .site-footer .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px 35px;
+    margin-bottom: 50px;
+  }
+
+  .site-footer .footer-col:first-child {
+    grid-column: 1 / -1;
+    max-width: 520px;
+  }
+
+  .site-footer .footer-col:last-child {
+    grid-column: 1 / -1;
+    max-width: 520px;
+  }
+
+  .site-footer .footer-col:first-child h4 {
+    font-size: 28px;
+  }
+
+  .site-footer .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .site-footer .footer-links {
+    gap: 15px 22px;
+  }
+}
+
+@media (max-width: 450px) {
+  .site-footer .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .site-footer .footer-col:first-child,
+  .site-footer .footer-col:last-child {
+    grid-column: auto;
+  }
+}
+</style>
+
+
 <script>
 (() => {
-  const modal = document.getElementById('fictionalDisclaimer');
-  const checkbox = document.getElementById('disclaimerCheck');
-  const button = document.getElementById('acknowledgeDisclaimer');
+  'use strict';
 
-  if (!modal || !checkbox || !button) return;
+  // Everything in this layer is intentionally temporary:
+  // no server calls, localStorage, cookies, or permanent persistence.
 
-  modal.style.display = 'flex';
+  const temp = {
+    reservations: [],
+    newsletterSubscribers: []
+  };
 
-  checkbox.addEventListener('change', () => {
-    button.disabled = !checkbox.checked;
+  // Reservation form: validate, temporarily store, show confirmation, then reset.
+  const form = document.getElementById('reserveForm');
+  if (form) {
+    const dateInput = form.querySelector('input[name="date"]');
+    if (dateInput) {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      dateInput.min = `${yyyy}-${mm}-${dd}`;
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      temp.reservations.push({
+        ...data,
+        createdAt: new Date().toISOString()
+      });
+
+      let success = form.querySelector('.form-success');
+      if (!success) {
+        success = document.createElement('div');
+        success.className = 'form-success';
+        form.prepend(success);
+      }
+
+      success.textContent =
+        `✓ Reservation request received for ${data.name}, ${data.date} at ${data.time} for ${data.party_size} guests.`;
+
+      success.style.display = 'block';
+      form.reset();
+
+      window.setTimeout(() => {
+        if (success) success.style.display = 'none';
+      }, 6000);
+    });
+  }
+
+  // Newsletter: temporary only, reset after success.
+  const newsletter = document.querySelector('.footer-newsletter');
+  if (newsletter) {
+    const email = newsletter.querySelector('input[type="email"]');
+    const subscribe = newsletter.querySelector('button');
+
+    if (email && subscribe) {
+      subscribe.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        if (!email.checkValidity()) {
+          email.reportValidity();
+          return;
+        }
+
+        temp.newsletterSubscribers.push({
+          email: email.value.trim(),
+          createdAt: new Date().toISOString()
+        });
+
+        const message = document.createElement('div');
+        message.setAttribute('role', 'status');
+        message.textContent = '✓ You’re subscribed for this session.';
+        message.style.marginTop = '8px';
+        message.style.fontSize = '12px';
+
+        newsletter.appendChild(message);
+        email.value = '';
+
+        window.setTimeout(() => message.remove(), 4000);
+      });
+    }
+  }
+
+  // Footer links marked with "#" should not jump to the top.
+  document.querySelectorAll('a[href="#"]').forEach((link) => {
+    link.addEventListener('click', (event) => event.preventDefault());
   });
 
-  button.addEventListener('click', () => {
-    if (!checkbox.checked) return;
-    modal.remove();
+  // Smooth scrolling for internal links while closing the mobile menu.
+  document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const id = link.getAttribute('href');
+      const target = document.querySelector(id);
+      if (!target) return;
+
+      event.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   });
+
+  // Story slideshow controls are temporary and pause while the user interacts.
+  const story = document.getElementById('story');
+  if (story) {
+    let timer = null;
+    let paused = false;
+
+    const restartStoryTimer = () => {
+      if (timer) clearInterval(timer);
+      if (!paused) {
+        timer = setInterval(() => {
+          if (typeof window.advanceStorySlide === 'function') {
+            window.advanceStorySlide();
+          }
+        }, 10000);
+      }
+    };
+
+    story.addEventListener('mouseenter', () => {
+      paused = true;
+      restartStoryTimer();
+    });
+
+    story.addEventListener('mouseleave', () => {
+      paused = false;
+      restartStoryTimer();
+    });
+
+    story.addEventListener('touchstart', () => {
+      paused = true;
+      restartStoryTimer();
+    }, { passive: true });
+
+    story.addEventListener('touchend', () => {
+      paused = false;
+      restartStoryTimer();
+    }, { passive: true });
+
+    restartStoryTimer();
+  }
 })();
 </script>
+
+
+<script id="disclaimer-popup-script">
+(() => {
+  'use strict';
+
+  const modal = document.getElementById('fictionalDisclaimer');
+  const button = document.getElementById('acknowledgeDisclaimer');
+
+  if (!modal || !button) return;
+
+  document.body.classList.add('disclaimer-open');
+
+  const closeDisclaimer = (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    modal.remove();
+    document.body.classList.remove('disclaimer-open');
+    document.removeEventListener('keydown', handleKeydown);
+  };
+
+  const handleKeydown = (event) => {
+    if (event.key === 'Escape') {
+      closeDisclaimer(event);
+    }
+  };
+
+  button.addEventListener('click', closeDisclaimer);
+  document.addEventListener('keydown', handleKeydown);
+
+  // Keep the disclaimer as an actual popup; backdrop clicks do not acknowledge it.
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      button.focus();
+    }
+  });
+
+  requestAnimationFrame(() => button.focus());
+})();
+</script>
+
 </body>
 </html>
